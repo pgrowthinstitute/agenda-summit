@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda — ScaleExO Summit 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #050D1A; --navy2: #042D3D; --cyan: #00CCCC;
+    --orange: #F26522; --white: #fff;
+    --muted: rgba(255,255,255,.55); --border: rgba(255,255,255,.08);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--navy); color: var(--white); }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(0,204,204,.04) 1px,transparent 1px), linear-gradient(90deg,rgba(0,204,204,.04) 1px,transparent 1px);
+    background-size: 44px 44px; pointer-events: none; z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(5,13,26,.95); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem; height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo { font-size: 1.1rem; font-weight: 700; color: #fff; letter-spacing: -.02em; }
+  .nav-logo span { color: var(--cyan); font-size: .6em; vertical-align: super; }
+  .nav-right { font-size: .72rem; color: var(--muted); }
+
+  /* HERO */
+  .hero {
+    position: relative; z-index: 1;
+    padding: 60px 2rem 40px; text-align: center;
+  }
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.8rem, 7vw, 5rem);
+    line-height: 1; text-transform: uppercase; margin-bottom: 8px;
+  }
+  .hero h1 em { font-style: normal; color: var(--cyan); }
+  .hero-meta {
+    font-size: .82rem; color: var(--muted); font-weight: 300;
+    margin-bottom: 28px; line-height: 1.7;
+  }
+  .hero-meta strong { color: #fff; font-weight: 500; }
+
+  /* TABS */
+  .tabs {
+    position: relative; z-index: 1;
+    display: flex; justify-content: center; gap: 8px;
+    padding: 0 2rem 32px;
+  }
+  .tab {
+    font-size: .75rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    padding: 10px 28px; border-radius: 3px; cursor: pointer;
+    border: 1px solid var(--border); background: var(--border); color: var(--muted);
+    transition: all .2s;
+  }
+  .tab.active { background: var(--orange); border-color: var(--orange); color: #fff; }
+  .tab:hover:not(.active) { border-color: var(--orange); color: var(--orange); }
+
+  /* DAY PANELS */
+  .day-panel { display: none; }
+  .day-panel.active { display: block; }
+
+  /* VIP BANNER */
+  .vip-banner {
+    position: relative; z-index: 1;
+    max-width: 760px; margin: 0 auto 24px;
+    background: linear-gradient(135deg, rgba(245,166,35,.12), rgba(245,166,35,.04));
+    border: 1px solid rgba(245,166,35,.4);
+    border-radius: 8px; padding: 16px 20px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .vip-star { font-size: 1.4rem; flex-shrink: 0; }
+  .vip-text {}
+  .vip-time { font-size: .75rem; font-weight: 700; color: #F5A623; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 2px; }
+  .vip-title { font-size: .92rem; font-weight: 700; color: #fff; margin-bottom: 2px; }
+  .vip-desc { font-size: .75rem; color: rgba(255,255,255,.5); font-weight: 300; }
+  .vip-date { margin-left: auto; font-size: .72rem; font-weight: 700; color: #F5A623; white-space: nowrap; flex-shrink: 0; }
+
+  /* AGENDA */
+  .agenda { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 0 2rem 80px; }
+
+  .agenda-row {
+    display: grid; grid-template-columns: 130px 1fr;
+    border-bottom: 1px solid var(--border);
+    padding: 0;
+  }
+  .agenda-row:last-child { border-bottom: none; }
+
+  .row-time {
+    padding: 16px 16px 16px 0;
+    font-size: .78rem; font-weight: 700; color: var(--cyan);
+    letter-spacing: .04em; line-height: 1.4;
+    border-right: 1px solid var(--border);
+    display: flex; align-items: flex-start; padding-top: 18px;
+  }
+
+  .row-content { padding: 16px 0 16px 20px; }
+
+  .row-title {
+    font-size: .92rem; font-weight: 700; color: #fff;
+    margin-bottom: 2px; line-height: 1.35;
+  }
+  .row-title.break { color: var(--muted); font-weight: 400; }
+
+  .row-session { font-size: .82rem; font-style: italic; color: rgba(255,255,255,.55); margin-bottom: 3px; line-height: 1.4; }
+  .row-speaker { font-size: .8rem; color: rgba(255,255,255,.6); font-weight: 300; line-height: 1.5; }
+  .row-speaker strong { color: #fff; font-weight: 500; }
+  .row-venue { font-size: .7rem; color: rgba(255,255,255,.3); margin-top: 4px; font-weight: 300; }
+
+  /* Workshop sub-items */
+  .workshop-items { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+  .workshop-item {
+    background: rgba(255,255,255,.03); border-left: 3px solid var(--cyan);
+    border-radius: 0 4px 4px 0; padding: 8px 12px;
+  }
+  .workshop-item.orange { border-left-color: var(--orange); }
+  .wi-title { font-size: .78rem; color: rgba(255,255,255,.7); line-height: 1.4; margin-bottom: 2px; }
+  .wi-speaker { font-size: .72rem; color: rgba(255,255,255,.4); font-weight: 300; }
+  .wi-speaker strong { color: rgba(255,255,255,.6); font-weight: 500; }
+
+  /* Highlight rows */
+  .row-highlight .row-content { background: rgba(242,101,34,.04); }
+  .row-highlight .row-title { color: var(--orange); }
+
+  /* Day header */
+  .day-header {
+    text-align: center; margin-bottom: 28px;
+    position: relative; z-index: 1;
+  }
+  .day-label { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--cyan); letter-spacing: .04em; }
+  .day-date { font-size: .8rem; color: var(--muted); font-weight: 300; margin-top: 2px; }
+
+  /* FOOTER */
+  footer { position: relative; z-index: 1; background: #031520; padding: 24px 2rem; text-align: center; border-top: 1px solid var(--border); }
+  .footer-logo { font-size: 1rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+  .footer-logo span { color: var(--cyan); font-size: .6em; vertical-align: super; }
+  footer p { font-size: .68rem; color: rgba(255,255,255,.25); line-height: 1.7; }
+  footer a { color: var(--cyan); text-decoration: none; }
+
+  @media (max-width: 500px) {
+    .agenda-row { grid-template-columns: 100px 1fr; }
+    .row-time { font-size: .68rem; }
+    .vip-date { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">SCALE<span>exo</span></div>
+  <div class="nav-right">PALCCO · Guadalajara · 28-29 Abril 2026</div>
+</nav>
+
+<section class="hero">
+  <h1>Agenda <em>ScaleExO</em></h1>
+  <p class="hero-meta">
+    <strong>PALCCO</strong> · Av. Central G. González Camarena 375, Zapopan, Jal.<br>
+    28 y 29 de Abril, 2026 · 9:00 am – 6:00 pm
+  </p>
+</section>
+
+<div class="tabs">
+  <div class="tab active" onclick="showDay(1, this)">Día 1 — Scaling Up</div>
+  <div class="tab" onclick="showDay(2, this)">Día 2 — ExO</div>
+</div>
+
+<!-- ═══════════════════ DÍA 1 ═══════════════════ -->
+<div class="day-panel active" id="day1">
+
+  <!-- VIP Pre-event -->
+  <div class="vip-banner" style="max-width:760px;margin:0 auto 24px;padding:0 2rem;" >
+  </div>
+
+  <div style="position:relative;z-index:1;max-width:760px;margin:0 auto;padding:0 2rem;">
+    <div style="background:linear-gradient(135deg,rgba(245,166,35,.12),rgba(245,166,35,.04));border:1px solid rgba(245,166,35,.4);border-radius:8px;padding:14px 18px;display:flex;align-items:center;gap:14px;margin-bottom:24px;">
+      <div style="font-size:1.3rem;flex-shrink:0;">⭐</div>
+      <div style="flex:1;">
+        <div style="font-size:.7rem;font-weight:700;color:#F5A623;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px;">Noche anterior · 7:00 pm · Hyatt Andares</div>
+        <div style="font-size:.9rem;font-weight:700;color:#fff;margin-bottom:2px;">Meaning of life con Salim Ismail</div>
+        <div style="font-size:.73rem;color:rgba(255,255,255,.45);font-weight:300;">Acceso exclusivo con el pase ScaleExO VIP</div>
+      </div>
+      <div style="font-size:.7rem;font-weight:700;color:#F5A623;white-space:nowrap;flex-shrink:0;">27 de Abril</div>
+    </div>
+  </div>
+
+  <div class="day-header">
+    <div class="day-label">Día 1: Scaling Up</div>
+    <div class="day-date">28 de Abril, 2026</div>
+  </div>
+
+  <div class="agenda">
+
+    <div class="agenda-row">
+      <div class="row-time">7:30 – 9:00 am</div>
+      <div class="row-content">
+        <div class="row-title break">Registro</div>
+      </div>
+    </div>
+
+    <div class="agenda-row">
+      <div class="row-time">9:00 – 9:20 am</div>
+      <div class="row-content">
+        <div class="row-title">Bienvenida</div>
+        <div class="row-session">Introducción al Summit</div>
+        <div class="row-venue">Teatro José Pablo Moncayo</div>
+      </div>
+    </div>
+
+    <div class="agenda-row row-highlight">
+      <div class="row-time">9:20 – 11:20 am</div>
+      <div class="row-content">
+        <div class="row-title">Conferencia Principal — Salim Ismail</div>
+        <div class="row-session">The Organizational Singularity</div>
+        <div class="row-speaker"><strong>Salim Ismail,</strong> cofundador de Singularity University y CEO de OpenExO</div>
+        <div class="row-venue">Teatro José Pablo Moncayo</div>
+      </div>
+    </div>
+
+    <div class="agenda-row">
+      <div class="row-time">11:20 – 11:35 am</div>
+      <div class="row-content">
+        <div class="row-title break">Receso</div>
+      </div>
+    </div>
+
+    <div class="agenda-row">
+      <div class="row-time">11:35 am – 12:45 pm</div>
+      <div class="row-content">
+        <div class="row-title">Conferencia Magistral</div>
+        <div class="row-session">Construye una marca personal poderosa</div>
+        <div class="row-speaker"><strong>Oso Trava,</strong> fundador de Cracks Podcast, emprendedor y conferencista</div>
+        <div class="row-venue">Teatro José Pablo Moncayo</div>
+      </div>
+    </div>
+
+    <div class="agenda-row">
+      <div class="row-time">12:45 – 1:55 pm</div>
+      <div class="row-content">
+        <div class="row-title">Conferencia Magistral</div>
+        <div class="row-session">IA — Herramientas para el Director General</div>
+        <div class="row-speaker"><strong>Adrián Villaseñor,</strong> cofundador y co-CEO de Lidd AI</div>
+        <div class="row-venue">Teatro José Pablo Moncayo</div>
+      </div>
+    </div>
+
+    <div class="agenda-row">
+      <div class="row-time">1:55 – 3:30 pm</div>
+      <div class="row-content">
+        <div class="row-title break">Receso para comida</div>
+      </div>
+    </div>
+
+    <div class="agenda-row">
+      <div class="row-time">3:30 – 4:00 pm</div>
+      <div class="row-content">
+        <div class="row-title">Presentación del Libro y Reconocimientos</div>
+        <div class="row-session">Presentación del libro <em>De startup a scaleup</em> y reconocimientos</div>
+        <div class="row-speaker"><strong>Daniel Marcos</strong></div>
+        <div class="row-venue">Teatro José Pablo Moncayo</div>
+      </div>
+    </div>
+
+    <div class="agenda-row row-highlight">
+      <div class="row-time">4:00 – 6:00 pm</div>
+      <div class="row-content">
+        <div class="row-title">Conferencia Principal — Verne Harnish</div>
+        <div class="row-session">El alma de la organización: escalar en el mundo actual</div>
+        <div class="row-speaker"><strong>Verne Harnish,</strong> fundador de Scaling Up y autor de <em>Scaling Up</em></div>
+        <div class="row-venue">Teatro José Pablo Moncayo</div>
+      </div>
+    </div>
+
+    <div class="agenda-row">
+      <div class="row-time">6:10 – 7:30 pm</div>
+      <div class="row-content">
+        <div class="row-title">Talleres</div>
+        <div class="workshop-items">
+          <div class="workshop-item orange">
+            <div class="wi-title">Escalar para la venta: cómo construir una empresa por la que los compradores pagarán un premium</div>
+            <div class="wi-speaker"><strong>Verne Harnish</strong></div>
+          </div>
+          <div class="workshop-item">
+            <div class="wi-title">La evolución del líder para construir una empresa rentable, eficiente y diseñada para escalar</div>
+            <div class="wi-speaker"><strong>Daniel Marcos</strong></div>
+          </div>
+        </div>
+        <div class="row-venue" style="margin-top:8px;">Ciberespacio · Moncayo</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════ DÍA 2 ═══════════════════ -->
+<div class="day-panel" id="day2">
+
+  <div class="day-header">
+    <div class="day-label">Día 2: ExO</div>
+    <div class="day-date">29 de Abril, 2026</div>
+  </div>
+
+  <div class="agenda">
+
+    <div class="agenda-row">
+      <div class="row-time">8:00 – 8:30 am</div>
+      <div class="row-content">
+        <div class="row-title break">Apertura de puertas</div>
+      </div>
+    </div>
+
+    <div class="agenda-row">
+      <div class="row-time">8:30 – 8:45 am</div>
+      <div class="row-content">
+        <div class="row-title">Bienvenida al Segundo Día</div>
+        <div class="row-session">Introducción al Summit</div>
+        <div class="row-speaker"><strong>Daniel Marcos</strong></div>
+        <div class="row-venue">Teatro José Pablo Moncayo</div>
+      </div>
+    </div>
+
+    <div class="agenda-row row-highlight">
+      <div class="row-time">8:45 – 10:45 am</div>
+      <div class="row-content">
+        <div class="row-title">Conferencia Magistral</div>
+        <div class="row-session">El nuevo orden empresarial: el sistema para liderar y escalar en la incertidumbre</div>
+        <div class="row-speaker"><strong>Daniel Marcos,</strong> fundador y CEO de Growth Institute</div>
+        <div class="row-venue">Teatro José Pablo Moncayo</div>
+      </div>
+    </div>
+
+    <div class="agenda-row">
+      <div class="row-time">10:45 – 11:00 am</div>
+      <div class="row-content">
+        <div class="row-title break">Receso</div>
+      </div>
+    </div>
+
+    <div class="agenda-row">
+      <div class="row-time">11:00 am – 12:10 pm</div>
+      <div class="row-content">
+        <div class="row-title">Conferencia Magistral</div>
+        <div class="row-session">¿Cuál es tu principal desafío?</div>
+        <div class="row-speaker"><strong>Alfonso Urrea,</strong> director general de Grupo Urrea</div>
+        <div class="row-venue">Teatro José Pablo Moncayo</div>
+      </div>
+    </div>
+
+    <div class="agenda-row">
+      <div class="row-time">12:10 – 12:20 pm</div>
+      <div class="row-content">
+        <div class="row-title break">Receso</div>
+      </div>
+    </div>
+
+    <div class="agenda-row">
+      <div class="row-time">12:20 – 1:30 pm</div>
+      <div class="row-content">
+        <div class="row-title">Conferencia Magistral</div>
+        <div class="row-session">Sinergia Exponencial</div>
+        <div class="row-speaker"><strong>Jorge Serratos,</strong> fundador del movimiento 1+1=3 y conferencista</div>
+        <div class="row-venue">Teatro José Pablo Moncayo</div>
+      </div>
+    </div>
+
+    <div class="agenda-row">
+      <div class="row-time">1:30 – 3:20 pm</div>
+      <div class="row-content">
+        <div class="row-title break">Receso para comida</div>
+      </div>
+    </div>
+
+    <div class="agenda-row">
+      <div class="row-time">3:20 – 4:30 pm</div>
+      <div class="row-content">
+        <div class="row-title">Conferencia Magistral</div>
+        <div class="row-session">Las delicias de emprender</div>
+        <div class="row-speaker"><strong>Marisa Lazo,</strong> fundadora y directora de Pastelerías Marisa</div>
+        <div class="row-venue">Teatro José Pablo Moncayo</div>
+      </div>
+    </div>
+
+    <div class="agenda-row row-highlight">
+      <div class="row-time">4:40 – 5:50 pm</div>
+      <div class="row-content">
+        <div class="row-title">Conferencia Magistral</div>
+        <div class="row-session">Marca Exponencial</div>
+        <div class="row-speaker"><strong>Arturo Lomelí,</strong> fundador de Clase Azul Tequila</div>
+        <div class="row-venue">Teatro José Pablo Moncayo</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">SCALE<span>exo</span></div>
+  <p>
+    <a href="mailto:events@growthinstitute.com">events@growthinstitute.com</a>
+    &nbsp;·&nbsp;
+    <a href="https://scalexo.lat">scalexo.lat</a>
+    &nbsp;·&nbsp;
+    PALCCO · Zapopan, Jalisco
+  </p>
+</footer>
+
+<script>
+function showDay(n, btn) {
+  document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('day' + n).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
